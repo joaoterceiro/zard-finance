@@ -9,7 +9,6 @@ import type { Database } from '@/types/supabase'
 export default function Register() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const supabase = createClientComponentClient<Database>()
@@ -17,7 +16,6 @@ export default function Register() {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    setError(null)
 
     try {
       const { error } = await supabase.auth.signUp({
@@ -32,7 +30,7 @@ export default function Register() {
 
       router.push('/login?message=Verifique seu email para confirmar seu cadastro')
     } catch (error) {
-      setError('Erro ao criar conta. Tente novamente.')
+      console.error('Erro ao criar conta. Tente novamente.', error)
     } finally {
       setLoading(false)
     }
@@ -51,12 +49,6 @@ export default function Register() {
         </div>
         
         <form className="mt-8 space-y-6" onSubmit={handleRegister}>
-          {error && (
-            <div className="bg-red-50 border-l-4 border-red-400 p-4">
-              <p className="text-sm text-red-700">{error}</p>
-            </div>
-          )}
-          
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
               <label htmlFor="email" className="sr-only">

@@ -6,11 +6,6 @@ import Header from '@/components/Header'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
-import { cn } from "@/lib/utils"
-import Link from 'next/link'
-import type { Database } from '@/types/supabase'
-import { GoalForm } from '@/components/GoalForm'
-import { Pencil, MoreVertical, ArrowUpCircle, Trash2 } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,6 +14,9 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { useToast } from '@/contexts/ToastContext'
+import { MoreVertical, Pencil, Trash2 } from "lucide-react"
+import GoalForm from '@/components/GoalForm'
+import type { Database } from '@/types/supabase'
 
 type Goal = Database['public']['Tables']['goals']['Row']
 
@@ -27,7 +25,7 @@ export default function Goals() {
   const [goals, setGoals] = useState<Goal[]>([])
   const [showForm, setShowForm] = useState(false)
   const [selectedGoal, setSelectedGoal] = useState<Goal | undefined>(undefined)
-  const [formMode, setFormMode] = useState<'create' | 'edit' | 'update'>('create')
+  const [formMode, setFormMode] = useState<'create' | 'edit'>('create')
   const [goalToDelete, setGoalToDelete] = useState<string | null>(null)
   const supabase = createClientComponentClient<Database>()
   const { showToast } = useToast()
@@ -53,7 +51,7 @@ export default function Goals() {
 
   useEffect(() => {
     fetchGoals()
-  }, [supabase])
+  }, [])
 
   const calculateProgress = (current: number, target: number) => {
     return Math.min((current / target) * 100, 100)
@@ -69,13 +67,7 @@ export default function Goals() {
     setFormMode('edit')
     setShowForm(true)
   }
-
-  const handleUpdateProgress = (goal: Goal) => {
-    setSelectedGoal(goal)
-    setFormMode('update')
-    setShowForm(true)
-  }
-
+  
   const handleDeleteClick = (goalId: string) => {
     setGoalToDelete(goalId)
   }
@@ -152,14 +144,7 @@ export default function Goals() {
                             <Pencil className="mr-2 h-4 w-4" />
                             Editar Meta
                           </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleUpdateProgress(goal)}>
-                            <ArrowUpCircle className="mr-2 h-4 w-4" />
-                            Atualizar Progresso
-                          </DropdownMenuItem>
-                          <DropdownMenuItem 
-                            onClick={() => handleDeleteClick(goal.id)}
-                            className="text-red-600 focus:text-red-600 focus:bg-red-50"
-                          >
+                          <DropdownMenuItem onClick={() => handleDeleteClick(goal.id)}>
                             <Trash2 className="mr-2 h-4 w-4" />
                             Excluir Meta
                           </DropdownMenuItem>

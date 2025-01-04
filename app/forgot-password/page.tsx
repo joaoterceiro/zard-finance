@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import type { Database } from '@/types/supabase'
 
@@ -11,7 +10,6 @@ export default function ForgotPassword() {
   const [error, setError] = useState<string | null>(null)
   const [message, setMessage] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
-  const router = useRouter()
   const supabase = createClientComponentClient<Database>()
 
   const handlePasswordReset = async (e: React.FormEvent) => {

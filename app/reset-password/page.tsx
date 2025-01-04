@@ -7,7 +7,6 @@ import type { Database } from '@/types/supabase'
 
 export default function ResetPassword() {
   const [password, setPassword] = useState('')
-  const [error, setError] = useState<string | null>(null)
   const [message, setMessage] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const router = useRouter()
@@ -26,8 +25,6 @@ export default function ResetPassword() {
   const handlePasswordReset = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    setError(null)
-    setMessage(null)
 
     try {
       const { error } = await supabase.auth.updateUser({
@@ -41,7 +38,7 @@ export default function ResetPassword() {
         router.push('/login')
       }, 2000)
     } catch (error) {
-      setError('Erro ao atualizar senha')
+      console.error('Erro ao atualizar senha', error)
     } finally {
       setLoading(false)
     }
@@ -60,12 +57,6 @@ export default function ResetPassword() {
         </div>
         
         <form className="mt-8 space-y-6" onSubmit={handlePasswordReset}>
-          {error && (
-            <div className="bg-red-50 border-l-4 border-red-400 p-4">
-              <p className="text-sm text-red-700">{error}</p>
-            </div>
-          )}
-          
           {message && (
             <div className="bg-green-50 border-l-4 border-green-400 p-4">
               <p className="text-sm text-green-700">{message}</p>

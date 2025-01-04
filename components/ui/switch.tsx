@@ -1,23 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
-
-const switchVariants = cva(
-  "relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none",
-  {
-    variants: {
-      checked: {
-        true: "bg-blue-600",
-        false: "bg-gray-200",
-      },
-    },
-    defaultVariants: {
-      checked: false,
-    },
-  }
-)
 
 interface SwitchProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   checked: boolean;
@@ -33,10 +17,7 @@ const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
         aria-checked={checked}
         className={cn(
           "relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none",
-          {
-            "bg-blue-600": checked,
-            "bg-gray-200": !checked,
-          },
+          checked ? "bg-blue-600" : "bg-gray-200",
           className
         )}
         onClick={() => onCheckedChange(!checked)}
@@ -45,10 +26,7 @@ const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
         <span
           className={cn(
             "inline-block h-5 w-5 transform rounded-full bg-white transition-transform",
-            {
-              "translate-x-5": checked,
-              "translate-x-0": !checked,
-            }
+            checked ? "translate-x-5" : "translate-x-0"
           )}
         />
       </button>

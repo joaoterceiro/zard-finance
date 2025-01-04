@@ -57,7 +57,7 @@ export default function Transactions() {
 
   useEffect(() => {
     fetchTransactions()
-  }, [supabase])
+  }, [fetchTransactions])
 
   const handleTransactionSuccess = () => {
     setShowForm(false)

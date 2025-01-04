@@ -13,7 +13,6 @@ import { Pencil, Trash2 } from "lucide-react"
 type Transaction = Database['public']['Tables']['transactions']['Row']
 
 export default function Dashboard() {
-  const [loading, setLoading] = useState(true)
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [categoryFilter, setCategoryFilter] = useState<string>('all')
   const [typeFilter, setTypeFilter] = useState<string>('all')
@@ -37,8 +36,6 @@ export default function Dashboard() {
       } catch (error) {
         console.error('Erro ao carregar transações:', error)
         showToast('Erro', 'Não foi possível carregar as transações', 'error')
-      } finally {
-        setLoading(false)
       }
     }
 

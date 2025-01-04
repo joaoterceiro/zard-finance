@@ -60,7 +60,7 @@ export default function Settings() {
     }
 
     loadProfile()
-  }, [supabase])
+  }, [profile, showToast])
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault()

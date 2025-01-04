@@ -1,11 +1,9 @@
 'use client'
 
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
+  PieChart,
+  Pie,
+  Cell,
   Tooltip,
   Legend,
   ResponsiveContainer
@@ -16,69 +14,54 @@ type Transaction = Database['public']['Tables']['transactions']['Row']
 
 type Props = {
   transactions: Transaction[]
+  type: 'income' | 'expense'
 }
 
-export function CashflowChart({ transactions }: Props) {
-  const data = transactions.reduce((acc: any[], transaction) => {
-    const date = new Date(transaction.date).getDate()
-    const existingDay = acc.find(item => item.day === date)
+const COLORS = [
+  '#0088FE', '#00C49F', '#FFBB28', '#FF8042', 
+  '#8884D8', '#82CA9D', '#FDB462', '#B3DE69'
+]
 
-    if (existingDay) {
-      if (transaction.type === 'income') {
-        existingDay.income += transaction.amount
+export function CashflowPieChart({ transactions, type }: Props) {
+  const data = transactions
+    .filter(t => t.type === type)
+    .reduce((acc: { name: string; value: number }[], transaction) => {
+      const existingCategory = acc.find(item => item.name === transaction.category)
+      if (existingCategory) {
+        existingCategory.value += transaction.amount
       } else {
-        existingDay.expense += transaction.amount
+        acc.push({
+          name: transaction.category,
+          value: transaction.amount
+        })
       }
-      existingDay.balance = existingDay.income - existingDay.expense
-    } else {
-      acc.push({
-        day: date,
-        income: transaction.type === 'income' ? transaction.amount : 0,
-        expense: transaction.type === 'expense' ? transaction.amount : 0,
-        balance: transaction.type === 'income' ? transaction.amount : -transaction.amount
-      })
-    }
-
-    return acc.sort((a, b) => a.day - b.day)
-  }, [])
+      return acc
+    }, [])
+    .sort((a, b) => b.value - a.value)
 
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <LineChart
-        data={data}
-        margin={{
-          top: 5,
-          right: 30,
-          left: 20,
-          bottom: 5,
-        }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="day" />
-        <YAxis />
-        <Tooltip
+      <PieChart>
+        <Pie
+          data={data}
+          dataKey="value"
+          nameKey="name"
+          cx="50%"
+          cy="50%"
+          outerRadius={80}
+          label={({ name, percent }) => 
+            `${name} ${(percent * 100).toFixed(0)}%`
+          }
+        >
+          {data.map((_, index) => (
+            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+          ))}
+        </Pie>
+        <Tooltip 
           formatter={(value: number) => `R$ ${value.toFixed(2)}`}
         />
         <Legend />
-        <Line
-          type="monotone"
-          dataKey="income"
-          stroke="#22c55e"
-          name="Receitas"
-        />
-        <Line
-          type="monotone"
-          dataKey="expense"
-          stroke="#ef4444"
-          name="Despesas"
-        />
-        <Line
-          type="monotone"
-          dataKey="balance"
-          stroke="#3b82f6"
-          name="Saldo"
-        />
-      </LineChart>
+      </PieChart>
     </ResponsiveContainer>
   )
 } 

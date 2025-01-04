@@ -93,4 +93,14 @@ export type Database = {
       }
     }
   }
+}
+
+export type Transaction = {
+  id: string;
+  user_id: string;
+  description: string;
+  category: string;
+  amount: number;
+  date: string; // ou Date, dependendo de como você está manipulando as datas
+  type: 'income' | 'expense'; // ou outro tipo que você esteja usando
 } 
